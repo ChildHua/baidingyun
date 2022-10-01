@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"learBaiding/autoIngressDemo/pkg"
+	"log"
 
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -18,7 +20,11 @@ func main() {
 	// start informer
 	c, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
 	if err != nil {
-		fmt.Println(err)
+		inClusterConfig, err := rest.InClusterConfig()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		c = inClusterConfig
 	}
 	clientset, err := kubernetes.NewForConfig(c)
 	if err != nil {
